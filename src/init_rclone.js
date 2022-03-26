@@ -1,9 +1,11 @@
 const readline = require("readline");
 const { spawn } = require("child_process");
+const driveId = process.argv[2];
+
 const rclone = spawn("rclone", [
     "config",
     "create",
-    "mydrive",
+    driveId,
     "drive",
     "config_is_local",
     "false",
