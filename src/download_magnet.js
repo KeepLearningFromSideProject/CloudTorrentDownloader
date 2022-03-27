@@ -1,6 +1,4 @@
-const parseTorrent = require("parse-torrent");
 const WebTorrent = require("webtorrent");
-const fs = require("fs");
 
 const torrentId = process.argv[2];
 const updateInterval = parseInt(process.argv[3]);
