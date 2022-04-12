@@ -1,0 +1,22 @@
+FROM ubuntu:20.04
+MAINTAINER FATESAIKOU
+
+RUN apt-get update && apt-get install -y curl
+
+# Update nodejs ppa
+RUN curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
+RUN bash /tmp/nodesource_setup.sh
+
+# Install utils
+RUN apt-get update && \
+    apt-get install -y apt-utils && \
+    apt-get install -y tmux git vim python3 python3-pip nodejs rclone
+
+RUN pip3 install ipython requests
+
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+ENV LANG en_US.utf8
+
+WORKDIR /project
