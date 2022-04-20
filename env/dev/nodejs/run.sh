@@ -18,7 +18,7 @@ container=$(docker run \
     -d \
     --rm \
     -v $project_url:/project \
-    cloud-downloader-worker bash)
+    btdownloader-dev bash)
 
 docker exec -it $container $command
 docker stop $container > /dev/null

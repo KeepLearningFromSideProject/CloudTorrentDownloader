@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker build -t cloud-downloader-worker .
+docker build -t btdownloader-dev .

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker ps -aqf ancestor=cloud-downloader-worker | xargs -I{} docker stop {}
+docker ps -aqf ancestor=btdownloader-dev | xargs -I{} docker stop {}
