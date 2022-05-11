@@ -84,9 +84,20 @@ class CdkStack(Stack):
             "kind": "Pod",
             "metadata": {"name": "worker"},
             "spec": {
+                "serviceAccountName": service_account.service_account_name,
                 "containers": [{
                     "name": "worker",
-                    "image": worker_asset.image_uri
+                    "image": worker_asset.image_uri,
+                    "env": [
+                        {
+                            "name": "TABLE_NAME",
+                            "value": table.table_name
+                        },
+                        {
+                            "name": "SQS_URL",
+                            "value": queue.queue_url
+                        }
+                    ]
                 }]
             }
         })
