@@ -1,18 +1,30 @@
 const WebTorrent = require("webtorrent");
 
-const torrentId = process.argv[2];
-const updateInterval = parseInt(process.argv[3]);
-const downloadDir = process.argv[4];
-const client = new WebTorrent();
+const defaultProcessCallback = (client) => {
+    console.log("[Download Speed]: " + client.downloadSpeed / 1024 + "kBs");
+    console.log("[Progress]: " + client.progress * 100 + "%");
+}
 
-client.add(torrentId, { path: downloadDir }, function (torrent) {
-    let interval = setInterval(function () {
-        console.log("[Download Speed]: " + client.downloadSpeed / 1024 + "kBs");
-        console.log("[Progress]: " + client.progress * 100 + "%");
-    }, updateInterval);
+const defaultFinishCallback = (client) => {
+    console.log("torrent download finished");
+}
 
-    torrent.on("done", function () {
-        console.log("torrent download finished");
-        process.exit(0);
+const downloadMagnet = (torrentId, updateInterval, downloadDir,
+    processCallback=defaultProcessCallback, finishCallback=defaultFinishCallback) => {
+
+    return new Promise((resolve, reject) => {
+        let client = new WebTorrent();
+        client.add(torrentId, { path: downloadDir }, function (torrent) {
+            let interval = setInterval(() => processCallback(client), updateInterval);
+        
+            torrent.on("done", () => {
+                client.destroy();
+                clearInterval(interval);
+                finishCallback(client);
+                resolve();
+            });
+        });
     });
-});
+}
+
+module.exports = downloadMagnet;
