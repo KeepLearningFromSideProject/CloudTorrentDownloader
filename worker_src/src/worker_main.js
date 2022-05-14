@@ -93,7 +93,7 @@ const main = async () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
     fs.rmSync('/tmp/rclone.conf', { force: true });
     await deleteTaskMsg(taskMsg);
-    await deleteTaskStatus(task);
+    await syncTaskStatus(task, 'completed', '-');
     process.exit(0);
 };
 
