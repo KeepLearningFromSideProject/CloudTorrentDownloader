@@ -31,7 +31,7 @@ const syncTaskStatus = (task, phase, progress) => {
         TableName: process.env.TABLE_NAME,
         Item: {
             task_name: { S: task.request.uuid },
-            task_content: { S: JSON.stringify(task) },
+            task_content: { S: JSON.stringify(task.storage) }
             phase: { S: phase },
             progress: { S: progress + "%" }
         },
