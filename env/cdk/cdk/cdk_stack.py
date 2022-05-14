@@ -65,10 +65,8 @@ class CdkStack(Stack):
 
         # Build image and push to ECR
         build_context = path.realpath(
-            path.join(path.dirname(__file__), '..', '..', '..'))
-        worker_dockerfile = path.join(
-            'env', 'eks', 'docker_imgs', 'worker', 'dockerfile'
-        )
+            path.join(path.dirname(__file__), '..', '..', '..', 'worker_src'))
+        worker_dockerfile = path.join('dockerfile')
         build_excludes = [path.join('env', 'cdk')]
         worker_asset = aea.DockerImageAsset(
             self, id=f"{construct_id}-Worker",
