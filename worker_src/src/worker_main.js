@@ -31,7 +31,7 @@ const syncTaskStatus = (task, phase, progress) => {
         TableName: process.env.TABLE_NAME,
         Item: {
             task_name: { S: task.request.uuid },
-            task_content: { S: JSON.stringify(task.storage) }
+            task_content: { S: JSON.stringify(task.storage) },
             phase: { S: phase },
             progress: { S: progress + "%" }
         },
@@ -72,7 +72,7 @@ const main = async () => {
     let storage = task.storage;
     fs.writeFile('/tmp/rclone.conf', storage.rcloneConf, (err) => console.log(err));
     await syncTaskStatus(task, phase="initializing", progress=100);
-    
+
     // do download
     console.log("[Download]: " + JSON.stringify(request));
     let tmpDir = fs.mkdtempSync('/tmp/magnet');
@@ -87,7 +87,7 @@ const main = async () => {
     await syncTaskStatus(task, "uploading", 0);
     await upload(tmpDir, storage.uploadDest)
     await syncTaskStatus(task, "uploading", 100);
-    
+
     // ending
     console.log("[CleanUp]");
     fs.rmSync(tmpDir, { recursive: true, force: true });
