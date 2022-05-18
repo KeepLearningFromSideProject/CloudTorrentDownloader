@@ -21,3 +21,5 @@ spec:
                     value: {{ .Values.CdkStack.taskStatusTableName }}
                   - name: SQS_URL
                     value: {{ .Values.CdkStack.taskQueueUrl }}
+                ports:
+                  - containerPort: 5000
