@@ -63,15 +63,27 @@ class CdkStack(Stack):
         queue.grant_consume_messages(service_account)
         table.grant_read_write_data(service_account)
 
-        # Build image and push to ECR
-        build_context = path.realpath(
+        # Build worker image and push to ECR
+        build_excludes = [path.join('env', 'cdk')]
+        worker_build_context = path.realpath(
             path.join(path.dirname(__file__), '..', '..', '..', 'worker_src'))
         worker_dockerfile = path.join('dockerfile')
-        build_excludes = [path.join('env', 'cdk')]
         worker_asset = aea.DockerImageAsset(
             self, id=f"{construct_id}-Worker",
-            directory=build_context,
+            directory=worker_build_context,
             file=worker_dockerfile,
+            exclude=build_excludes,
+            build_args={'SRC_PATH': '.'}
+        )
+
+        # Build service image and push to ECR
+        service_build_context = path.realpath(
+            path.join(path.dirname(__file__), '..', '..', '..', 'service_src'))
+        service_dockerfile = path.join('dockerfile')
+        service_asset = aea.DockerImageAsset(
+            self, id=f"{construct_id}-Service",
+            directory=service_build_context,
+            file=service_dockerfile,
             exclude=build_excludes,
             build_args={'SRC_PATH': '.'}
         )
@@ -84,3 +96,5 @@ class CdkStack(Stack):
                       value=service_account.service_account_name)
         cdk.CfnOutput(self, "workerImageUri",
                       value=worker_asset.image_uri)
+        cdk.CfnOutput(self, "serviceImageUri",
+                      value=service_asset.image_uri)

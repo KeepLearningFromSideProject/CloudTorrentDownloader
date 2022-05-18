@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: "cloud-downloader-api-service"
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: service
+    template:
+        metadata:
+            labels:
+                app: service
+        spec:
+            serviceAccountName: {{ .Values.CdkStack.serviceAccountName }}
+            containers:
+              - name: service
+                image: {{ .Values.CdkStack.serviceImageUri }}
+                env:
+                  - name: TABLE_NAME
+                    value: {{ .Values.CdkStack.taskStatusTableName }}
+                  - name: SQS_URL
+                    value: {{ .Values.CdkStack.taskQueueUrl }}

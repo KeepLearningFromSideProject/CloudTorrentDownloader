@@ -1,0 +1,25 @@
+FROM ubuntu:20.04
+MAINTAINER FATESAIKOU
+
+RUN apt-get update && apt-get install -y curl
+
+# Install utils
+RUN apt-get update && \
+    apt-get install -y apt-utils && \
+    apt-get install -y tmux git vim python3 python3-pip
+
+RUN pip3 install ipython requests
+
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+ENV LANG en_US.utf8
+
+ARG SRC_PATH
+ADD $SRC_PATH /project
+RUN cd /project && pip install -r requirements.txt
+RUN chmod a+x /project/entrypoint.sh
+
+WORKDIR /project
+
+ENTRYPOINT ["/project/entrypoint.sh"]
