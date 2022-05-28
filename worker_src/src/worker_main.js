@@ -76,11 +76,18 @@ const main = async () => {
     // do download
     console.log("[Download]: " + JSON.stringify(request));
     let tmpDir = fs.mkdtempSync('/tmp/magnet');
-    await downloadMagnet(
-        request.magnetLink, 1000, tmpDir,
+    let downloadResult = await downloadMagnet(
+        request.magnetLink, 1000, tmpDir, request['timeout'],
         processCallBack= (client) => downloadProcessCallback(client, task),
         finishCallback= (client) => downloadFinishCallBack(client, task)
     );
+
+    // if download not success, update status and return
+    if (downloadResult !== 'success') {
+        await syncTaskStatus(task, phase="download:"+downloadResult);
+        // TODO push back message
+        process.exit(1);
+    }
 
     // do upload
     console.log("[Upload]: " + storage.uploadDest);

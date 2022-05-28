@@ -29,7 +29,8 @@ def createTask():
     taskUuid = uuid.uuid5(uuid.NAMESPACE_URL, request.json['magnet_link']).hex
     requestObj = {
         'uuid': taskUuid,
-        'magnetLink': request.json['magnet_link']
+        'magnetLink': request.json['magnet_link'],
+        'timeout': request.json.get('timeout', 3600) * 1000
     }
 
     storageObj = {
