@@ -25,6 +25,16 @@ const deleteTaskMsg = (msg) => {
     return sqs.deleteMessage(params).promise();
 };
 
+const pushMsgBack = (msg) => {
+    let params = {
+        QueueUrl: process.env.SQS_URL,
+        ReceiptHandle: msg.ReceiptHandle,
+        VisibilityTimeout: 1
+    };
+
+    return sqs.changeMessageVisibility(params).promise();
+}
+
 // Dynamodb operations
 const syncTaskStatus = (task, phase, progress) => {
     let params = {
@@ -84,8 +94,8 @@ const main = async () => {
 
     // if download not success, update status and return
     if (downloadResult !== 'success') {
+        await pushMsgBack(taskMsg);
         await syncTaskStatus(task, phase="download:"+downloadResult);
-        // TODO push back message
         process.exit(1);
     }
 
